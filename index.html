@@ -83,10 +83,20 @@
       background:var(--accent);
       color:#fff;
     }
+    .route-line {
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:center;
+      margin-bottom:12px;
+    }
     .route-title {
       font-size:18px;
       font-weight:800;
-      margin-bottom:10px;
+      min-width:0;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
     }
     .badge {
       display:inline-block;
@@ -96,7 +106,7 @@
       color:#0057b8;
       font-size:12px;
       font-weight:800;
-      margin-bottom:12px;
+      white-space:nowrap;
     }
     .next-row {
       display:grid;
@@ -188,8 +198,10 @@
     </section>
 
     <section class="card">
-      <div id="routeTitle" class="route-title">--</div>
-      <div id="dayBadge" class="badge">--</div>
+      <div class="route-line">
+        <div id="routeTitle" class="route-title">--</div>
+        <div id="dayBadge" class="badge">--</div>
+      </div>
       <div class="next-row">
         <div>
           <div class="muted">次の便</div>
@@ -330,6 +342,14 @@
       return `あと ${m}分${pad2(s)}秒`;
     }
 
+    function formatLeaveTime(depSec) {
+      return formatTimeFromSeconds(depSec - RETURN_SAFE_SECONDS);
+    }
+
+    function formatBeforeTime(depSec, minutesBefore) {
+      return formatTimeFromSeconds(depSec - minutesBefore * 60);
+    }
+
     function getStationOffset(from, direction) {
       const st = stationByName(from);
       if (!st) return 0;
@@ -439,7 +459,7 @@
       markMode();
 
       el.routeTitle.textContent = `${from} → ${to}`;
-      el.dayBadge.textContent = `${todayType()} / ${direction === "east" ? "新さっぽろ方面" : direction === "west" ? "宮の沢方面" : "未設定"}`;
+      el.dayBadge.textContent = `${todayType()} ${direction === "east" ? "新さっぽろ方面" : direction === "west" ? "宮の沢方面" : "未設定"}`;
       el.upcomingList.innerHTML = "";
       el.emptyMessage.style.display = "none";
       el.returnJudge.className = "return-judge hidden";
@@ -475,16 +495,22 @@
       el.nextCountdown.textContent = formatCountdown(left);
 
       if (isReturn) {
+        const leaveTime = formatLeaveTime(next);
         if (left >= RETURN_SAFE_SECONDS) {
           el.returnJudge.className = "return-judge";
-          el.returnJudge.textContent = "8分前以上：間に合う目安です";
+          el.returnJudge.innerHTML = `${leaveTime}に席を立てばOK`;
         } else if (left >= RETURN_LIMIT_SECONDS) {
           el.returnJudge.className = "return-judge warning";
-          el.returnJudge.textContent = "6〜8分前：限界寄りです";
+          el.returnJudge.innerHTML = `${leaveTime}目安。今出ると限界寄りです`;
         }
+      } else {
+        const bicycleTime = formatBeforeTime(next, 7);
+        const walkTime = formatBeforeTime(next, 10);
+        el.returnJudge.className = "return-judge";
+        el.returnJudge.innerHTML = `チャリなら${bicycleTime}に出発<br>徒歩なら${walkTime}に出発`;
       }
 
-      upcoming.slice(0, DISPLAY_COUNT).forEach(depSec => {
+      upcoming.slice(1, DISPLAY_COUNT + 1).forEach(depSec => {
         const li = document.createElement("li");
 
         const t = document.createElement("div");
