@@ -5,10 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="🚃" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>🚃</title>
   <style>
     :root {
-      --bg:#f2f2f7;
+      --bg:#ffffff;
       --card:#fff;
       --text:#1c1c1e;
       --sub:#636366;
@@ -16,7 +19,6 @@
       --accent:#007aff;
       --warn:#b25000;
       --ok:#248a3d;
-      --danger:#d70015;
     }
     * { box-sizing:border-box; }
     body {
@@ -84,19 +86,20 @@
       color:#fff;
     }
     .route-line {
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:10px;
+      display:flex;
       align-items:center;
+      justify-content:space-between;
+      gap:10px;
       margin-bottom:12px;
     }
     .route-title {
       font-size:18px;
       font-weight:800;
       min-width:0;
+      flex:1;
+      white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      white-space:nowrap;
     }
     .badge {
       display:inline-block;
@@ -107,6 +110,7 @@
       font-size:12px;
       font-weight:800;
       white-space:nowrap;
+      flex-shrink:0;
     }
     .next-row {
       display:grid;
@@ -133,8 +137,8 @@
     }
     .return-judge {
       margin-top:10px;
-      font-size:15px;
-      font-weight:800;
+      font-size:20px;
+      font-weight:900;
       color:var(--ok);
     }
     .return-judge.warning { color:var(--warn); }
@@ -167,12 +171,6 @@
     .empty {
       color:var(--sub);
       padding-top:8px;
-    }
-    .small {
-      color:var(--sub);
-      font-size:12px;
-      line-height:1.5;
-      margin-top:8px;
     }
   </style>
 </head>
@@ -223,9 +221,9 @@
     "use strict";
 
     const STORAGE = {
-      from:"subway_from_v10",
-      to:"subway_to_v10",
-      mode:"subway_mode_v10"
+      from:"subway_from_v12",
+      to:"subway_to_v12",
+      mode:"subway_mode_v12"
     };
 
     const DISPLAY_COUNT = 3;
@@ -264,9 +262,7 @@
 
     const el = {};
 
-    function $(id) {
-      return document.getElementById(id);
-    }
+    function $(id) { return document.getElementById(id); }
 
     function safeGet(key) {
       try { return localStorage.getItem(key); } catch { return null; }
@@ -276,36 +272,25 @@
       try { localStorage.setItem(key, value); } catch {}
     }
 
-    function pad2(n) {
-      return String(n).padStart(2, "0");
-    }
-
-    function getNow() {
-      return new Date();
-    }
+    function pad2(n) { return String(n).padStart(2, "0"); }
 
     function currentSeconds() {
-      const d = getNow();
+      const d = new Date();
       return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
     }
 
     function updateClock() {
-      const d = getNow();
+      const d = new Date();
       el.now.textContent = `現在時刻：${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
     }
 
     function todayType() {
-      const day = getNow().getDay();
+      const day = new Date().getDay();
       return day === 0 || day === 6 ? "土日祝" : "平日";
     }
 
-    function stationIndex(name) {
-      return STATIONS.findIndex(s => s.name === name);
-    }
-
-    function stationByName(name) {
-      return STATIONS.find(s => s.name === name);
-    }
+    function stationIndex(name) { return STATIONS.findIndex(s => s.name === name); }
+    function stationByName(name) { return STATIONS.find(s => s.name === name); }
 
     function isReturnDefault(from, to) {
       return from === DEFAULT_RETURN.from && to === DEFAULT_RETURN.to;
@@ -330,6 +315,7 @@
     }
 
     function formatTimeFromSeconds(sec) {
+      while (sec < 0) sec += 24 * 3600;
       const h = Math.floor(sec / 3600);
       const m = Math.floor((sec % 3600) / 60);
       return `${pad2(h % 24)}:${pad2(m)}`;
@@ -344,10 +330,6 @@
 
     function formatLeaveTime(depSec) {
       return formatTimeFromSeconds(depSec - RETURN_SAFE_SECONDS);
-    }
-
-    function formatBeforeTime(depSec, minutesBefore) {
-      return formatTimeFromSeconds(depSec - minutesBefore * 60);
     }
 
     function getStationOffset(from, direction) {
@@ -366,26 +348,11 @@
 
       Object.keys(schedule).forEach(hour => {
         schedule[hour].forEach(min => {
-          const depSec = toSeconds(hour, min) + offsetMin * 60;
-          result.push(depSec);
+          result.push(toSeconds(hour, min) + offsetMin * 60);
         });
       });
 
       return result.sort((a,b) => a - b);
-    }
-
-    function getSelected() {
-      return {
-        from: el.fromStation.value,
-        to: el.toStation.value,
-        mode: safeGet(STORAGE.mode) || "outbound"
-      };
-    }
-
-    function saveSelected(from, to, mode) {
-      safeSet(STORAGE.from, from);
-      safeSet(STORAGE.to, to);
-      safeSet(STORAGE.mode, mode);
     }
 
     function populateStations() {
@@ -401,16 +368,19 @@
         el.toStation.appendChild(o2);
       });
 
-      const savedFrom = safeGet(STORAGE.from) || DEFAULT_OUTBOUND.from;
-      const savedTo = safeGet(STORAGE.to) || DEFAULT_OUTBOUND.to;
-
-      el.fromStation.value = savedFrom;
-      el.toStation.value = savedTo;
+      el.fromStation.value = safeGet(STORAGE.from) || DEFAULT_OUTBOUND.from;
+      el.toStation.value = safeGet(STORAGE.to) || DEFAULT_OUTBOUND.to;
 
       if (el.fromStation.value === el.toStation.value) {
         el.fromStation.value = DEFAULT_OUTBOUND.from;
         el.toStation.value = DEFAULT_OUTBOUND.to;
       }
+    }
+
+    function saveSelected(from, to, mode) {
+      safeSet(STORAGE.from, from);
+      safeSet(STORAGE.to, to);
+      safeSet(STORAGE.mode, mode);
     }
 
     function setTrip(mode) {
@@ -426,9 +396,11 @@
     }
 
     function markMode() {
-      const mode = safeGet(STORAGE.mode) || "outbound";
-      el.outboundButton.classList.toggle("active", mode === "outbound");
-      el.returnButton.classList.toggle("active", mode === "return");
+      const from = el.fromStation.value;
+      const to = el.toStation.value;
+      const isReturn = isReturnDefault(from, to);
+      el.outboundButton.classList.toggle("active", !isReturn);
+      el.returnButton.classList.toggle("active", isReturn);
     }
 
     function handleStationChange() {
@@ -498,19 +470,14 @@
         const leaveTime = formatLeaveTime(next);
         if (left >= RETURN_SAFE_SECONDS) {
           el.returnJudge.className = "return-judge";
-          el.returnJudge.innerHTML = `${leaveTime}に席を立てばOK`;
+          el.returnJudge.textContent = `${leaveTime}に席を立てばOK`;
         } else if (left >= RETURN_LIMIT_SECONDS) {
           el.returnJudge.className = "return-judge warning";
-          el.returnJudge.innerHTML = `${leaveTime}目安。今出ると限界寄りです`;
+          el.returnJudge.textContent = `${leaveTime}目安。今出ると限界寄りです`;
         }
-      } else {
-        const bicycleTime = formatBeforeTime(next, 7);
-        const walkTime = formatBeforeTime(next, 10);
-        el.returnJudge.className = "return-judge";
-        el.returnJudge.innerHTML = `チャリなら${bicycleTime}に出発<br>徒歩なら${walkTime}に出発`;
       }
 
-      upcoming.slice(1, DISPLAY_COUNT + 1).forEach(depSec => {
+      upcoming.slice(0, DISPLAY_COUNT).forEach(depSec => {
         const li = document.createElement("li");
 
         const t = document.createElement("div");
