@@ -5,568 +5,377 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="🚃" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=18">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20">
   <meta name="theme-color" content="#ffffff">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>🚃</title>
   <style>
-    :root {
-      --bg:#ffffff;
-      --card:#fff;
-      --text:#1c1c1e;
-      --sub:#636366;
-      --line:#d1d1d6;
-      --accent:#007aff;
-      --warn:#b25000;
-      --ok:#248a3d;
-      --danger:#d70015;
-    }
-    * { box-sizing:border-box; }
-    body {
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Yu Gothic UI",sans-serif;
-      -webkit-text-size-adjust:100%;
-    }
-    .app {
-      max-width:520px;
-      margin:0 auto;
-      padding:max(16px, env(safe-area-inset-top)) 14px max(22px, env(safe-area-inset-bottom));
-    }
-    .now {
-      font-size:28px;
-      font-weight:800;
-      letter-spacing:-0.5px;
-      margin-bottom:12px;
-    }
-    .card {
-      background:var(--card);
-      border-radius:18px;
-      padding:16px;
-      margin-bottom:12px;
-      box-shadow:0 2px 12px rgba(0,0,0,.07);
-    }
-    .station-grid {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-    }
-    label {
-      display:block;
-      font-size:13px;
-      color:var(--sub);
-      margin-bottom:6px;
-    }
-    select, button {
-      width:100%;
-      font:inherit;
-      border-radius:12px;
-    }
-    select {
-      border:1px solid var(--line);
-      background:#fff;
-      color:var(--text);
-      padding:12px;
-    }
-    .trip-toggle {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-    button {
-      border:0;
-      padding:13px 14px;
-      background:#e5e5ea;
-      color:var(--text);
-      font-weight:800;
-    }
-    button.active {
-      background:var(--accent);
-      color:#fff;
-    }
-    .route-line {
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:10px;
-      align-items:center;
-      margin-bottom:12px;
-    }
-    .route-title {
-      font-size:18px;
-      font-weight:800;
-      min-width:0;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-    .badge {
-      display:inline-block;
-      padding:4px 8px;
-      border-radius:999px;
-      background:#e8f1ff;
-      color:#0057b8;
-      font-size:12px;
-      font-weight:800;
-      white-space:nowrap;
-    }
-    .next-row {
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:12px;
-      align-items:end;
-      margin-top:8px;
-    }
-    .muted {
-      color:var(--sub);
-      font-size:13px;
-    }
-    .depart {
-      font-size:48px;
-      font-weight:900;
-      line-height:1;
-      letter-spacing:-1px;
-    }
-    .countdown {
-      font-size:24px;
-      font-weight:900;
-      color:var(--accent);
-      white-space:nowrap;
-    }
-    .guide {
-      margin-top:10px;
-      font-size:15px;
-      font-weight:800;
-      color:var(--ok);
-      line-height:1.45;
-    }
-    .guide.warning { color:var(--warn); }
-    .guide.hidden { display:none; }
-    .list {
-      margin:0;
-      padding:0;
-      list-style:none;
-    }
-    .list li {
-      display:grid;
-      grid-template-columns:74px auto;
-      gap:8px;
-      align-items:center;
-      justify-content:space-between;
-      padding:12px 0;
-      border-bottom:1px solid var(--line);
-      font-size:15px;
-    }
-    .list li:last-child { border-bottom:0; }
-    .mini-time {
-      font-size:18px;
-      font-weight:900;
-    }
-    .mini-left {
-      color:var(--accent);
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .empty {
-      color:var(--sub);
-      padding-top:8px;
-    }
-    .small {
-      color:var(--sub);
-      font-size:12px;
-      line-height:1.5;
-      margin-top:8px;
-    }
+    :root{--bg:#ffffff;--card:#fff;--text:#1c1c1e;--sub:#636366;--line:#d1d1d6;--accent:#007aff;--warn:#b25000;--ok:#248a3d}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic","Yu Gothic UI",sans-serif;-webkit-text-size-adjust:100%}
+    .app{max-width:520px;margin:0 auto;padding:max(16px,env(safe-area-inset-top)) 14px max(22px,env(safe-area-inset-bottom))}
+    .now{font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:12px}
+    .card{background:var(--card);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+    .station-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    label{display:block;font-size:13px;color:var(--sub);margin-bottom:6px}
+    select,button{width:100%;font:inherit;border-radius:12px}
+    select{border:1px solid var(--line);background:#fff;color:var(--text);padding:12px}
+    .trip-toggle{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    button{border:0;padding:13px 14px;background:#e5e5ea;color:var(--text);font-weight:800}
+    button.active{background:var(--accent);color:#fff}
+    .route-line{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-bottom:12px}
+    .route-title{font-size:18px;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#e8f1ff;color:#0057b8;font-size:12px;font-weight:800;white-space:nowrap}
+    .next-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end;margin-top:8px}
+    .muted{color:var(--sub);font-size:13px}
+    .depart{font-size:48px;font-weight:900;line-height:1;letter-spacing:-1px}
+    .countdown{font-size:24px;font-weight:900;color:var(--accent);white-space:nowrap}
+    .guide{margin-top:10px;font-size:15px;font-weight:800;color:var(--ok);line-height:1.45}
+    .guide.warning{color:var(--warn)}
+    .guide.hidden{display:none}
+    .list{margin:0;padding:0;list-style:none}
+    .list li{display:grid;grid-template-columns:74px auto;gap:8px;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
+    .list li:last-child{border-bottom:0}
+    .mini-time{font-size:18px;font-weight:900}
+    .mini-left{color:var(--accent);font-weight:900;white-space:nowrap}
+    .empty{color:var(--sub);padding-top:8px}
   </style>
 </head>
 <body>
-  <main class="app">
-    <div id="now" class="now">現在時刻：--:--:--</div>
+<main class="app">
+  <div id="now" class="now">現在時刻：--:--:--</div>
 
-    <section class="card">
-      <div class="station-grid">
-        <div>
-          <label for="fromStation">出発駅</label>
-          <select id="fromStation"></select>
-        </div>
-        <div>
-          <label for="toStation">到着駅</label>
-          <select id="toStation"></select>
-        </div>
+  <section class="card">
+    <div class="station-grid">
+      <div><label for="fromStation">出発駅</label><select id="fromStation"></select></div>
+      <div><label for="toStation">到着駅</label><select id="toStation"></select></div>
+    </div>
+    <div class="trip-toggle">
+      <button id="outboundButton" type="button">行き</button>
+      <button id="returnButton" type="button">帰り</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="route-line">
+      <div id="routeTitle" class="route-title">--</div>
+      <div id="dayBadge" class="badge">--</div>
+    </div>
+    <div class="next-row">
+      <div>
+        <div class="muted">次の便</div>
+        <div id="nextDeparture" class="depart">--:--</div>
       </div>
-      <div class="trip-toggle">
-        <button id="outboundButton" type="button">行き</button>
-        <button id="returnButton" type="button">帰り</button>
-      </div>
-    </section>
+      <div id="nextCountdown" class="countdown">あと --</div>
+    </div>
+    <div id="guide" class="guide hidden"></div>
+  </section>
 
-    <section class="card">
-      <div class="route-line">
-        <div id="routeTitle" class="route-title">--</div>
-        <div id="dayBadge" class="badge">--</div>
-      </div>
-      <div class="next-row">
-        <div>
-          <div class="muted">次の便</div>
-          <div id="nextDeparture" class="depart">--:--</div>
-        </div>
-        <div id="nextCountdown" class="countdown">あと --</div>
-      </div>
-      <div id="guide" class="guide hidden"></div>
-    </section>
+  <section class="card">
+    <div class="route-title">この後の便</div>
+    <ul id="upcomingList" class="list"></ul>
+    <div id="emptyMessage" class="empty" style="display:none;">本日の登録便は終了しました。</div>
+  </section>
+</main>
 
-    <section class="card">
-      <div class="route-title">この後の便</div>
-      <ul id="upcomingList" class="list"></ul>
-      <div id="emptyMessage" class="empty" style="display:none;">本日の登録便は終了しました。</div>
-    </section>
-  </main>
+<script>
+"use strict";
 
-  <script>
-    "use strict";
+const STORAGE={from:"subway_from_v20",to:"subway_to_v20",mode:"subway_mode_v20"};
+const DISPLAY_COUNT=3;
+const RETURN_SAFE_SECONDS=8*60;
+const RETURN_LIMIT_SECONDS=6*60;
+const BICYCLE_BEFORE_MINUTES=7;
+const WALK_BEFORE_MINUTES=10;
 
-    const STORAGE = {
-      from:"subway_from_v18",
-      to:"subway_to_v18",
-      mode:"subway_mode_v18"
-    };
+const STATIONS=["菊水","西11丁目"];
+const DEFAULT_OUTBOUND={from:"菊水",to:"西11丁目"};
+const DEFAULT_RETURN={from:"西11丁目",to:"菊水"};
 
-    const DISPLAY_COUNT = 3;
-    const RETURN_SAFE_SECONDS = 8 * 60;
-    const RETURN_LIMIT_SECONDS = 6 * 60;
-    const BICYCLE_BEFORE_MINUTES = 7;
-    const WALK_BEFORE_MINUTES = 10;
-
-    const STATIONS = [
-      {code:"T01", name:"宮の沢", offsetEast:0,  offsetWest:37},
-      {code:"T02", name:"発寒南", offsetEast:2,  offsetWest:35},
-      {code:"T03", name:"琴似", offsetEast:4,  offsetWest:33},
-      {code:"T04", name:"二十四軒", offsetEast:6,  offsetWest:31},
-      {code:"T05", name:"西28丁目", offsetEast:8,  offsetWest:29},
-      {code:"T06", name:"円山公園", offsetEast:10, offsetWest:27},
-      {code:"T07", name:"西18丁目", offsetEast:12, offsetWest:25},
-      {code:"T08", name:"西11丁目", offsetEast:14, offsetWest:23},
-      {code:"T09", name:"大通", offsetEast:16, offsetWest:21},
-      {code:"T10", name:"バスセンター前", offsetEast:18, offsetWest:19},
-      {code:"T11", name:"菊水", offsetEast:19, offsetWest:18},
-      {code:"T12", name:"東札幌", offsetEast:21, offsetWest:16},
-      {code:"T13", name:"白石", offsetEast:23, offsetWest:14},
-      {code:"T14", name:"南郷7丁目", offsetEast:25, offsetWest:12},
-      {code:"T15", name:"南郷13丁目", offsetEast:28, offsetWest:9},
-      {code:"T16", name:"南郷18丁目", offsetEast:30, offsetWest:7},
-      {code:"T17", name:"大谷地", offsetEast:33, offsetWest:4},
-      {code:"T18", name:"ひばりが丘", offsetEast:35, offsetWest:2},
-      {code:"T19", name:"新さっぽろ", offsetEast:37, offsetWest:0}
-    ];
-
-    const EAST_WEEKDAY = {"6":[0,10,20,30,39,48,57],"7":[6,13,20,26,30,34,39,43,47,51,55,59],"8":[3,8,12,16,21,25,29,33,37,42,46,50,54,59],"9":[3,8,12,16,20,24,29,34,42,49,56],"10":[3,10,17,24,31,38,45,52,59],"11":[6,13,20,27,34,41,48,55],"12":[2,9,16,23,30,37,44,51,58],"13":[5,12,19,26,33,40,47,54],"14":[1,8,15,22,29,36,43,50,57],"15":[4,11,18,25,32,39,46,53],"16":[0,7,14,22,29,36,42,49,55],"17":[0,5,10,15,20,25,30,35,41,46,51,56],"18":[1,6,11,16,22,27,32,37,43,48,54,59],"19":[4,10,15,20,25,30,36,42,47,54],"20":[1,9,17,24,32,39,47,54],"21":[2,9,17,24,32,39,47,54],"22":[2,9,18,27,35,44,51,59],"23":[8,16,24,32,40,50],"24":[0]};
-    const EAST_WEEKEND = {"6":[0,10,20,30,38,48,57],"7":[5,14,22,29,36,43,50,57],"8":[4,11,18,25,32,39,46,53],"9":[0,7,14,21,28,35,42,49,56],"10":[3,10,17,24,31,38,45,52,59],"11":[6,13,20,27,34,41,48,55],"12":[2,9,16,23,30,37,44,51,58],"13":[5,12,19,26,33,40,47,54],"14":[1,8,15,22,29,36,43,50,57],"15":[4,11,18,25,32,39,46,53],"16":[0,7,14,21,28,35,42,49,56],"17":[3,10,17,24,31,38,45,52,59],"18":[6,13,20,27,34,41,48,55],"19":[1,9,16,23,30,38,46,53,59],"20":[7,15,22,30,37,45,52],"21":[0,7,15,22,30,37,45,52],"22":[0,7,16,25,34,43,51,59],"23":[6,15,24,32,40,50],"24":[0]};
-    const WEST_WEEKDAY = {"6":[0,10,20,30,37,42,48,53,58],"7":[2,6,10,15,19,23,27,31,36,40,45,49,53,57],"8":[1,5,9,13,17,21,26,30,35,39,43,47,53],"9":[0,7,13,20,27,34,41,47,54],"10":[1,8,15,23,30,37,45,52,59],"11":[6,13,20,27,34,41,48,55],"12":[2,9,16,23,30,37,44,51,58],"13":[5,12,19,26,33,40,47,54],"14":[1,8,15,22,29,36,43,50,57],"15":[4,11,18,25,32,39,46,53],"16":[0,7,13,19,24,29,34,39,44,49,54,59],"17":[4,9,14,20,25,31,36,41,46,51,56],"18":[1,6,11,17,22,27,32,37,42,47,52],"19":[0,6,14,21,29,37,44,52,59],"20":[7,14,21,29,37,44,52,59],"21":[7,14,22,29,37,44,52,59],"22":[8,17,26,35,43,52],"23":[0,10,20,30,40,50],"24":[0]};
-    const WEST_WEEKEND = {"6":[0,10,20,30,38,46,53],"7":[0,7,14,21,28,35,42,49,56],"8":[3,10,17,24,31,38,45,52,59],"9":[6,13,20,27,34,41,48,55],"10":[2,9,16,23,30,37,44,51,58],"11":[5,12,19,26,33,40,47,54],"12":[1,8,15,22,29,36,43,50,57],"13":[4,11,18,25,32,39,46,53],"14":[0,7,14,21,28,35,42,49,56],"15":[3,10,17,24,31,38,45,52,59],"16":[6,13,20,27,34,41,48,55],"17":[2,9,16,23,30,37,44,51,58],"18":[5,12,19,26,33,40,47,54],"19":[2,10,19,27,35,42,50,57],"20":[5,12,20,27,35,42,50,57],"21":[5,12,20,27,35,42,50,57],"22":[6,15,24,34,43,52],"23":[0,10,20,30,40,50],"24":[0]};
-
-    const DEFAULT_OUTBOUND = {from:"菊水", to:"西11丁目"};
-    const DEFAULT_RETURN = {from:"西11丁目", to:"菊水"};
-
-    const el = {};
-
-    function $(id) {
-      return document.getElementById(id);
+const OFFICIAL_TIMETABLES={
+  "菊水|西11丁目":{
+    directionLabel:"宮の沢方面",
+    weekday:{
+      "6":[6,15,25,35,45,52,58],
+      "7":[3,9,13,18,22,26,30,34,38,42,47,51,56],
+      "8":[0,4,8,12,16,20,24,28,32,37,41,46,50,54,59],
+      "9":[3,9,15,22,28,35,43,49,56],
+      "10":[2,9,16,23,31,38,45,53],
+      "11":[0,7,14,21,28,35,42,49,56],
+      "12":[3,10,17,24,31,38,45,52,59],
+      "13":[6,13,20,27,34,41,48,55],
+      "14":[2,9,16,23,30,37,44,51,58],
+      "15":[5,12,19,26,33,40,47,54],
+      "16":[1,8,15,22,29,35,40,45,50,55],
+      "17":[0,5,10,15,20,25,30,35,41,46,51,56],
+      "18":[1,6,12,17,22,27,32,37,42,47,53,58],
+      "19":[3,8,15,22,29,37,44,52],
+      "20":[0,7,15,22,30,37,45,52],
+      "21":[0,7,15,22,30,37,45,52],
+      "22":[0,7,15,24,33,42,51,59],
+      "23":[7,15,25,35,45,55],
+      "24":[5,15]
+    },
+    weekend:{
+      "6":[6,15,25,35,45,54],
+      "7":[1,8,16,23,30,37,44,51,58],
+      "8":[5,12,19,26,33,40,47,54],
+      "9":[1,8,15,22,29,36,43,50,57],
+      "10":[4,11,18,25,32,39,46,53],
+      "11":[0,7,14,21,28,35,42,49,56],
+      "12":[3,10,17,24,31,38,45,52,59],
+      "13":[6,13,20,27,34,41,48,55],
+      "14":[2,9,16,23,30,37,44,51,58],
+      "15":[5,12,19,26,33,40,47,54],
+      "16":[1,8,15,22,29,36,43,50,57],
+      "17":[4,11,18,25,32,39,46,53],
+      "18":[0,7,14,21,28,35,42,49,56],
+      "19":[3,10,18,26,34,42,50,58],
+      "20":[5,13,20,28,35,43,50,58],
+      "21":[5,13,20,28,35,43,50,58],
+      "22":[5,13,22,31,39,49,58],
+      "23":[7,15,25,35,45,55],
+      "24":[5,15]
     }
-
-    function safeGet(key) {
-      try { return localStorage.getItem(key); } catch { return null; }
+  },
+  "西11丁目|菊水":{
+    directionLabel:"新さっぽろ方面",
+    weekday:{
+      "6":[13,23,33,43,52],
+      "7":[1,10,19,26,33,39,44,48,53,57],
+      "8":[1,5,9,13,17,22,26,30,35,39,43,47,51,56],
+      "9":[0,3,8,12,17,21,25,29,33,38,43,48,55],
+      "10":[2,10,17,24,31,38,45,52,59],
+      "11":[6,13,20,27,34,41,48,55],
+      "12":[2,9,16,23,30,37,44,51,58],
+      "13":[5,12,19,26,33,40,47,54],
+      "14":[1,8,15,22,29,36,43,50,57],
+      "15":[4,11,18,25,32,39,46,53],
+      "16":[0,7,14,21,28,35,43,49,56],
+      "17":[2,8,13,18,23,29,34,39,44,49,54,59],
+      "18":[4,9,15,20,25,30,35,40,45,51,56],
+      "19":[2,7,13,18,23,28,33,38,44,49,55],
+      "20":[1,7,15,23,30,38,45,53],
+      "21":[0,8,15,23,30,38,45,53],
+      "22":[0,8,15,23,32,41,48,57],
+      "23":[4,12,21,29,37,45,53],
+      "24":[3,13]
+    },
+    weekend:{
+      "6":[13,23,33,43,52],
+      "7":[1,11,19,28,35,42,49,56],
+      "8":[3,10,17,24,31,38,45,52,59],
+      "9":[6,13,20,27,34,41,48,55],
+      "10":[2,9,16,23,30,37,44,51,58],
+      "11":[5,12,19,26,33,40,47,54],
+      "12":[1,8,15,22,29,36,43,50,57],
+      "13":[4,11,18,25,32,39,46,53],
+      "14":[0,7,14,21,28,35,42,49,56],
+      "15":[3,10,17,24,31,38,45,52,59],
+      "16":[6,13,20,27,34,41,48,55],
+      "17":[2,9,16,23,30,37,44,51,58],
+      "18":[5,12,19,26,33,40,47,54],
+      "19":[1,8,15,22,29,36,43,51,59],
+      "20":[7,13,21,28,36,43,51,58],
+      "21":[6,13,21,28,36,43,51,58],
+      "22":[6,13,21,30,39,48,56],
+      "23":[4,12,20,29,37,45,53],
+      "24":[3,13]
     }
+  }
+};
 
-    function safeSet(key, value) {
-      try { localStorage.setItem(key, value); } catch {}
+const el={};
+
+function $(id){return document.getElementById(id)}
+function safeGet(key){try{return localStorage.getItem(key)}catch{return null}}
+function safeSet(key,value){try{localStorage.setItem(key,value)}catch{}}
+function pad2(n){return String(n).padStart(2,"0")}
+function getNow(){return new Date()}
+function currentSeconds(){const d=getNow();return d.getHours()*3600+d.getMinutes()*60+d.getSeconds()}
+function updateClock(){const d=getNow();el.now.textContent=`現在時刻：${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`}
+function todayType(){const day=getNow().getDay();return day===0||day===6?"土日祝":"平日"}
+function getTimetableKey(from,to){return `${from}|${to}`}
+function getCurrentRouteData(from,to){return OFFICIAL_TIMETABLES[getTimetableKey(from,to)]||null}
+function getTodaySchedule(routeData){if(!routeData)return null;return todayType()==="土日祝"?routeData.weekend:routeData.weekday}
+function toSeconds(hour,minute){return Number(hour)*3600+Number(minute)*60}
+function formatTimeFromSeconds(sec){while(sec<0)sec+=24*3600;const h=Math.floor(sec/3600);const m=Math.floor((sec%3600)/60);return `${pad2(h%24)}:${pad2(m)}`}
+function formatCountdown(seconds){if(seconds<=0)return"まもなく";const m=Math.floor(seconds/60);const s=seconds%60;return `あと ${m}分${pad2(s)}秒`}
+function formatReturnLeaveTime(depSec){return formatTimeFromSeconds(depSec-RETURN_SAFE_SECONDS)}
+function formatBeforeTime(depSec,minutesBefore){return formatTimeFromSeconds(depSec-minutesBefore*60)}
+
+function getDepartures(from,to){
+  const routeData=getCurrentRouteData(from,to);
+  const schedule=getTodaySchedule(routeData);
+  if(!schedule)return [];
+  const result=[];
+  Object.keys(schedule).forEach(hour=>{
+    schedule[hour].forEach(min=>{
+      result.push(toSeconds(hour,min));
+    });
+  });
+  return result.sort((a,b)=>a-b);
+}
+
+function isReturnRoute(from,to){return from===DEFAULT_RETURN.from&&to===DEFAULT_RETURN.to}
+function saveSelected(from,to,mode){safeSet(STORAGE.from,from);safeSet(STORAGE.to,to);safeSet(STORAGE.mode,mode)}
+
+function populateStations(){
+  STATIONS.forEach(st=>{
+    const o1=document.createElement("option");o1.value=st;o1.textContent=st;el.fromStation.appendChild(o1);
+    const o2=document.createElement("option");o2.value=st;o2.textContent=st;el.toStation.appendChild(o2);
+  });
+  const savedFrom=safeGet(STORAGE.from)||DEFAULT_OUTBOUND.from;
+  const savedTo=safeGet(STORAGE.to)||DEFAULT_OUTBOUND.to;
+  el.fromStation.value=STATIONS.includes(savedFrom)?savedFrom:DEFAULT_OUTBOUND.from;
+  el.toStation.value=STATIONS.includes(savedTo)?savedTo:DEFAULT_OUTBOUND.to;
+  if(el.fromStation.value===el.toStation.value){
+    el.fromStation.value=DEFAULT_OUTBOUND.from;
+    el.toStation.value=DEFAULT_OUTBOUND.to;
+  }
+}
+
+function setTrip(mode){
+  if(mode==="return"){
+    el.fromStation.value=DEFAULT_RETURN.from;
+    el.toStation.value=DEFAULT_RETURN.to;
+  }else{
+    el.fromStation.value=DEFAULT_OUTBOUND.from;
+    el.toStation.value=DEFAULT_OUTBOUND.to;
+  }
+  saveSelected(el.fromStation.value,el.toStation.value,mode);
+  render();
+}
+
+function markMode(){
+  const from=el.fromStation.value;
+  const to=el.toStation.value;
+  const isReturn=isReturnRoute(from,to);
+  el.outboundButton.classList.toggle("active",!isReturn);
+  el.returnButton.classList.toggle("active",isReturn);
+}
+
+function handleStationChange(){
+  let from=el.fromStation.value;
+  let to=el.toStation.value;
+  if(from===to){
+    to=from==="菊水"?"西11丁目":"菊水";
+    el.toStation.value=to;
+  }
+  const mode=isReturnRoute(from,to)?"return":"outbound";
+  saveSelected(from,to,mode);
+  render();
+}
+
+function render(){
+  updateClock();
+
+  const from=el.fromStation.value;
+  const to=el.toStation.value;
+  const routeData=getCurrentRouteData(from,to);
+  const isReturn=isReturnRoute(from,to);
+  const nowSec=currentSeconds();
+
+  markMode();
+
+  el.routeTitle.textContent=`${from} → ${to}`;
+  el.dayBadge.textContent=routeData?`${todayType()} ${routeData.directionLabel}`:"未設定";
+  el.upcomingList.innerHTML="";
+  el.emptyMessage.style.display="none";
+  el.guide.className="guide hidden";
+  el.guide.innerHTML="";
+
+  if(!routeData){
+    el.nextDeparture.textContent="--:--";
+    el.nextCountdown.textContent="未設定";
+    el.emptyMessage.style.display="block";
+    el.emptyMessage.textContent="この駅間の公式時刻表は未登録です。";
+    return;
+  }
+
+  const departures=getDepartures(from,to);
+  const upcoming=departures.filter(depSec=>{
+    const left=depSec-nowSec;
+    if(isReturn)return left>=RETURN_LIMIT_SECONDS;
+    return left>=0;
+  });
+
+  if(upcoming.length===0){
+    el.nextDeparture.textContent="--:--";
+    el.nextCountdown.textContent="なし";
+    el.emptyMessage.style.display="block";
+    el.emptyMessage.textContent="本日の登録便は終了しました。";
+    return;
+  }
+
+  const next=upcoming[0];
+  const left=next-nowSec;
+
+  el.nextDeparture.textContent=formatTimeFromSeconds(next);
+  el.nextCountdown.textContent=formatCountdown(left);
+
+  if(isReturn){
+    const leaveTime=formatReturnLeaveTime(next);
+    if(left>=RETURN_SAFE_SECONDS){
+      el.guide.className="guide";
+      el.guide.innerHTML=`${leaveTime}に席を立てばOK`;
+    }else if(left>=RETURN_LIMIT_SECONDS){
+      el.guide.className="guide warning";
+      el.guide.innerHTML=`${leaveTime}目安。今出ると限界寄りです`;
     }
+  }else{
+    const bicycleTime=formatBeforeTime(next,BICYCLE_BEFORE_MINUTES);
+    const walkTime=formatBeforeTime(next,WALK_BEFORE_MINUTES);
+    el.guide.className="guide";
+    el.guide.innerHTML=`チャリなら${bicycleTime}に出発<br>徒歩なら${walkTime}に出発`;
+  }
 
-    function pad2(n) {
-      return String(n).padStart(2, "0");
-    }
+  upcoming.slice(1,DISPLAY_COUNT+1).forEach(depSec=>{
+    const li=document.createElement("li");
+    const t=document.createElement("div");
+    t.className="mini-time";
+    t.textContent=formatTimeFromSeconds(depSec);
+    const c=document.createElement("div");
+    c.className="mini-left";
+    c.textContent=formatCountdown(depSec-nowSec).replace("あと ","");
+    li.appendChild(t);
+    li.appendChild(c);
+    el.upcomingList.appendChild(li);
+  });
+}
 
-    function getNow() {
-      return new Date();
-    }
+function init(){
+  el.now=$("now");
+  el.fromStation=$("fromStation");
+  el.toStation=$("toStation");
+  el.outboundButton=$("outboundButton");
+  el.returnButton=$("returnButton");
+  el.routeTitle=$("routeTitle");
+  el.dayBadge=$("dayBadge");
+  el.nextDeparture=$("nextDeparture");
+  el.nextCountdown=$("nextCountdown");
+  el.guide=$("guide");
+  el.upcomingList=$("upcomingList");
+  el.emptyMessage=$("emptyMessage");
 
-    function currentSeconds() {
-      const d = getNow();
-      return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds();
-    }
+  populateStations();
 
-    function updateClock() {
-      const d = getNow();
-      el.now.textContent = `現在時刻：${pad2(d.getHours())}:${pad2(d.getMinutes())}:${pad2(d.getSeconds())}`;
-    }
+  el.fromStation.addEventListener("change",handleStationChange);
+  el.toStation.addEventListener("change",handleStationChange);
+  el.outboundButton.addEventListener("click",()=>setTrip("outbound"));
+  el.returnButton.addEventListener("click",()=>setTrip("return"));
 
-    function todayType() {
-      const day = getNow().getDay();
-      return day === 0 || day === 6 ? "土日祝" : "平日";
-    }
+  render();
+  window.setInterval(render,1000);
+  document.addEventListener("visibilitychange",render);
+  window.addEventListener("pageshow",render);
+}
 
-    function stationIndex(name) {
-      return STATIONS.findIndex(s => s.name === name);
-    }
-
-    function stationByName(name) {
-      return STATIONS.find(s => s.name === name);
-    }
-
-    function isReturnDefault(from, to) {
-      return from === DEFAULT_RETURN.from && to === DEFAULT_RETURN.to;
-    }
-
-    function getDirection(from, to) {
-      const fi = stationIndex(from);
-      const ti = stationIndex(to);
-      if (fi < 0 || ti < 0 || fi === ti) return null;
-      return fi < ti ? "east" : "west";
-    }
-
-    function getBaseSchedule(direction) {
-      const weekend = todayType() === "土日祝";
-      if (direction === "east") return weekend ? EAST_WEEKEND : EAST_WEEKDAY;
-      if (direction === "west") return weekend ? WEST_WEEKEND : WEST_WEEKDAY;
-      return {};
-    }
-
-    function toSeconds(hour, minute) {
-      return Number(hour) * 3600 + Number(minute) * 60;
-    }
-
-    function formatTimeFromSeconds(sec) {
-      const h = Math.floor(sec / 3600);
-      const m = Math.floor((sec % 3600) / 60);
-      return `${pad2(h % 24)}:${pad2(m)}`;
-    }
-
-    function formatCountdown(seconds) {
-      if (seconds <= 0) return "まもなく";
-      const m = Math.floor(seconds / 60);
-      const s = seconds % 60;
-      return `あと ${m}分${pad2(s)}秒`;
-    }
-
-    function formatReturnLeaveTime(depSec) {
-      return formatTimeFromSeconds(depSec - RETURN_SAFE_SECONDS);
-    }
-
-    function formatBeforeTime(depSec, minutesBefore) {
-      return formatTimeFromSeconds(depSec - minutesBefore * 60);
-    }
-
-    function getStationOffset(from, direction) {
-      const st = stationByName(from);
-      if (!st) return 0;
-      return direction === "east" ? st.offsetEast : st.offsetWest;
-    }
-
-    function getDepartures(from, to) {
-      const direction = getDirection(from, to);
-      if (!direction) return [];
-
-      const schedule = getBaseSchedule(direction);
-      const offsetMin = getStationOffset(from, direction);
-      const result = [];
-
-      Object.keys(schedule).forEach(hour => {
-        schedule[hour].forEach(min => {
-          const depSec = toSeconds(hour, min) + offsetMin * 60;
-          result.push(depSec);
-        });
-      });
-
-      return result.sort((a,b) => a - b);
-    }
-
-    function getSelected() {
-      return {
-        from: el.fromStation.value,
-        to: el.toStation.value,
-        mode: safeGet(STORAGE.mode) || "outbound"
-      };
-    }
-
-    function saveSelected(from, to, mode) {
-      safeSet(STORAGE.from, from);
-      safeSet(STORAGE.to, to);
-      safeSet(STORAGE.mode, mode);
-    }
-
-    function populateStations() {
-      STATIONS.forEach(st => {
-        const o1 = document.createElement("option");
-        o1.value = st.name;
-        o1.textContent = st.name;
-        el.fromStation.appendChild(o1);
-
-        const o2 = document.createElement("option");
-        o2.value = st.name;
-        o2.textContent = st.name;
-        el.toStation.appendChild(o2);
-      });
-
-      const savedFrom = safeGet(STORAGE.from) || DEFAULT_OUTBOUND.from;
-      const savedTo = safeGet(STORAGE.to) || DEFAULT_OUTBOUND.to;
-
-      el.fromStation.value = savedFrom;
-      el.toStation.value = savedTo;
-
-      if (el.fromStation.value === el.toStation.value) {
-        el.fromStation.value = DEFAULT_OUTBOUND.from;
-        el.toStation.value = DEFAULT_OUTBOUND.to;
-      }
-    }
-
-    function setTrip(mode) {
-      if (mode === "return") {
-        el.fromStation.value = DEFAULT_RETURN.from;
-        el.toStation.value = DEFAULT_RETURN.to;
-      } else {
-        el.fromStation.value = DEFAULT_OUTBOUND.from;
-        el.toStation.value = DEFAULT_OUTBOUND.to;
-      }
-      saveSelected(el.fromStation.value, el.toStation.value, mode);
-      render();
-    }
-
-    function markMode() {
-      const from = el.fromStation.value;
-      const to = el.toStation.value;
-      const isReturn = isReturnDefault(from, to);
-      el.outboundButton.classList.toggle("active", !isReturn);
-      el.returnButton.classList.toggle("active", isReturn);
-    }
-
-    function handleStationChange() {
-      let from = el.fromStation.value;
-      let to = el.toStation.value;
-
-      if (from === to) {
-        const idx = stationIndex(from);
-        const fallback = STATIONS[idx + 1] || STATIONS[idx - 1] || STATIONS[0];
-        to = fallback.name;
-        el.toStation.value = to;
-      }
-
-      const mode = isReturnDefault(from, to) ? "return" : "outbound";
-      saveSelected(from, to, mode);
-      render();
-    }
-
-    function render() {
-      updateClock();
-
-      const from = el.fromStation.value;
-      const to = el.toStation.value;
-      const direction = getDirection(from, to);
-      const isReturn = isReturnDefault(from, to);
-      const nowSec = currentSeconds();
-
-      markMode();
-
-      el.routeTitle.textContent = `${from} → ${to}`;
-      el.dayBadge.textContent = `${todayType()} ${direction === "east" ? "新さっぽろ方面" : direction === "west" ? "宮の沢方面" : "未設定"}`;
-      el.upcomingList.innerHTML = "";
-      el.emptyMessage.style.display = "none";
-      el.guide.className = "guide hidden";
-      el.guide.innerHTML = "";
-
-      if (!direction) {
-        el.nextDeparture.textContent = "--:--";
-        el.nextCountdown.textContent = "未設定";
-        el.emptyMessage.style.display = "block";
-        el.emptyMessage.textContent = "出発駅と到着駅を別々に選択してください。";
-        return;
-      }
-
-      const departures = getDepartures(from, to);
-      const upcoming = departures.filter(depSec => {
-        const left = depSec - nowSec;
-        if (isReturn) return left >= RETURN_LIMIT_SECONDS;
-        return left >= 0;
-      });
-
-      if (upcoming.length === 0) {
-        el.nextDeparture.textContent = "--:--";
-        el.nextCountdown.textContent = "なし";
-        el.emptyMessage.style.display = "block";
-        el.emptyMessage.textContent = "本日の登録便は終了しました。";
-        return;
-      }
-
-      const next = upcoming[0];
-      const left = next - nowSec;
-
-      el.nextDeparture.textContent = formatTimeFromSeconds(next);
-      el.nextCountdown.textContent = formatCountdown(left);
-
-      if (isReturn) {
-        const leaveTime = formatReturnLeaveTime(next);
-        if (left >= RETURN_SAFE_SECONDS) {
-          el.guide.className = "guide";
-          el.guide.innerHTML = `${leaveTime}に席を立てばOK`;
-        } else if (left >= RETURN_LIMIT_SECONDS) {
-          el.guide.className = "guide warning";
-          el.guide.innerHTML = `${leaveTime}目安。今出ると限界寄りです`;
-        }
-      } else {
-        const bicycleTime = formatBeforeTime(next, BICYCLE_BEFORE_MINUTES);
-        const walkTime = formatBeforeTime(next, WALK_BEFORE_MINUTES);
-        el.guide.className = "guide";
-        el.guide.innerHTML = `チャリなら${bicycleTime}に出発<br>徒歩なら${walkTime}に出発`;
-      }
-
-      upcoming.slice(1, DISPLAY_COUNT + 1).forEach(depSec => {
-        const li = document.createElement("li");
-
-        const t = document.createElement("div");
-        t.className = "mini-time";
-        t.textContent = formatTimeFromSeconds(depSec);
-
-        const c = document.createElement("div");
-        c.className = "mini-left";
-        c.textContent = formatCountdown(depSec - nowSec).replace("あと ", "");
-
-        li.appendChild(t);
-        li.appendChild(c);
-        el.upcomingList.appendChild(li);
-      });
-    }
-
-    function init() {
-      el.now = $("now");
-      el.fromStation = $("fromStation");
-      el.toStation = $("toStation");
-      el.outboundButton = $("outboundButton");
-      el.returnButton = $("returnButton");
-      el.routeTitle = $("routeTitle");
-      el.dayBadge = $("dayBadge");
-      el.nextDeparture = $("nextDeparture");
-      el.nextCountdown = $("nextCountdown");
-      el.guide = $("guide");
-      el.upcomingList = $("upcomingList");
-      el.emptyMessage = $("emptyMessage");
-
-      populateStations();
-
-      el.fromStation.addEventListener("change", handleStationChange);
-      el.toStation.addEventListener("change", handleStationChange);
-      el.outboundButton.addEventListener("click", () => setTrip("outbound"));
-      el.returnButton.addEventListener("click", () => setTrip("return"));
-
-      render();
-      window.setInterval(render, 1000);
-      document.addEventListener("visibilitychange", render);
-      window.addEventListener("pageshow", render);
-    }
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", init);
-    } else {
-      init();
-    }
-  </script>
+if(document.readyState==="loading"){
+  document.addEventListener("DOMContentLoaded",init);
+}else{
+  init();
+}
+</script>
 </body>
 </html>
