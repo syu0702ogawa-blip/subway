@@ -33,11 +33,21 @@
     .guide{margin-top:10px;font-size:15px;font-weight:800;color:var(--ok);line-height:1.45}
     .guide.warning{color:var(--warn)}
     .guide.hidden{display:none}
+    .previous-train-card.passed{
+      opacity:.55;
+      filter:grayscale(1);
+    }
+    .previous-train-card.passed .mini-left,
+    .previous-train-card.passed .mini-guide,
+    .previous-train-card.passed .mini-time{
+      color:#8e8e93 !important;
+    }
     .list{margin:0;padding:0;list-style:none}
     .list li{display:grid;grid-template-columns:74px auto;gap:8px;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px}
     .list li:last-child{border-bottom:0}
     .mini-time{font-size:18px;font-weight:900}
-    .mini-left{color:var(--accent);font-weight:900;white-space:nowrap}
+    .mini-left{color:var(--accent);font-weight:900;white-space:nowrap;text-align:right}
+    .mini-guide{color:var(--sub);font-size:12px;font-weight:800;margin-top:4px;white-space:nowrap;text-align:right;line-height:1.25}
     .empty{color:var(--sub);padding-top:8px}
   </style>
 </head>
@@ -56,6 +66,21 @@
     </div>
   </section>
 
+
+
+  <section class="card" id="previousTrainCard" style="display:none;">
+    <div class="route-title">一本前の便</div>
+    <ul class="list">
+      <li>
+        <div id="previousTrainTime" class="mini-time">--:--</div>
+        <div>
+          <div id="previousTrainLeft" class="mini-left">--</div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  
   <section class="card">
     <div class="route-line">
       <div id="routeTitle" class="route-title">--</div>
@@ -69,9 +94,7 @@
       <div id="nextCountdown" class="countdown">あと --</div>
     </div>
     <div id="guide" class="guide hidden"></div>
-  </section>
-
-  <section class="card">
+  </section><section class="card">
     <div class="route-title">この後の便</div>
     <ul id="upcomingList" class="list"></ul>
     <div id="emptyMessage" class="empty" style="display:none;">本日の登録便は終了しました。</div>
@@ -87,6 +110,7 @@ const RETURN_SAFE_SECONDS=8*60;
 const RETURN_LIMIT_SECONDS=6*60;
 const BICYCLE_BEFORE_MINUTES=7;
 const WALK_BEFORE_MINUTES=10;
+
 
 const STATIONS=["菊水","西11丁目"];
 const DEFAULT_OUTBOUND={from:"菊水",to:"西11丁目"};
@@ -284,6 +308,9 @@ function render(){
   el.emptyMessage.style.display="none";
   el.guide.className="guide hidden";
   el.guide.innerHTML="";
+  el.previousTrainCard.style.display="none";
+  el.previousTrainTime.textContent="--:--";
+  el.previousTrainLeft.textContent="--";
 
   if(!routeData){
     el.nextDeparture.textContent="--:--";
@@ -294,6 +321,34 @@ function render(){
   }
 
   const departures=getDepartures(from,to);
+  const previousCandidates=departures.filter(depSec=>{
+    const left=depSec-nowSec;
+
+    if(isReturn){
+      // 席立ち期限を過ぎたが、列車自体はまだ駅に来ていない便
+      return left<RETURN_LIMIT_SECONDS && left>0;
+    }
+
+    // 行きは出発済みだが、直近として短時間だけ残す
+    return left<0 && Math.abs(left)<=30*60;
+  });
+
+  const previousTrain=previousCandidates.length?previousCandidates[previousCandidates.length-1]:null;
+
+  if(previousTrain){
+    const left=previousTrain-nowSec;
+
+    el.previousTrainCard.style.display="block";
+    el.previousTrainCard.classList.add("passed");
+    el.previousTrainTime.textContent=formatTimeFromSeconds(previousTrain);
+
+    if(left>0){
+      el.previousTrainLeft.textContent=`駅到着まで ${formatCountdown(left).replace("あと ","")}`;
+    }else{
+      el.previousTrainLeft.textContent=`${Math.floor(Math.abs(left)/60)}分${pad2(Math.abs(left)%60)}秒前`;
+    }
+  }
+
   const upcoming=departures.filter(depSec=>{
     const left=depSec-nowSec;
     if(isReturn)return left>=RETURN_LIMIT_SECONDS;
@@ -332,14 +387,31 @@ function render(){
 
   upcoming.slice(1,DISPLAY_COUNT+1).forEach(depSec=>{
     const li=document.createElement("li");
+
     const t=document.createElement("div");
     t.className="mini-time";
     t.textContent=formatTimeFromSeconds(depSec);
+
+    const right=document.createElement("div");
+
     const c=document.createElement("div");
     c.className="mini-left";
     c.textContent=formatCountdown(depSec-nowSec).replace("あと ","");
+
+    const g=document.createElement("div");
+    g.className="mini-guide";
+
+    if(isReturn){
+      g.textContent=`${formatReturnLeaveTime(depSec)}に席を立てばOK`;
+    }else{
+      g.innerHTML=`チャリ ${formatBeforeTime(depSec,BICYCLE_BEFORE_MINUTES)}<br>徒歩 ${formatBeforeTime(depSec,WALK_BEFORE_MINUTES)}`;
+    }
+
+    right.appendChild(c);
+    right.appendChild(g);
+
     li.appendChild(t);
-    li.appendChild(c);
+    li.appendChild(right);
     el.upcomingList.appendChild(li);
   });
 }
@@ -357,6 +429,9 @@ function init(){
   el.guide=$("guide");
   el.upcomingList=$("upcomingList");
   el.emptyMessage=$("emptyMessage");
+  el.previousTrainCard=$("previousTrainCard");
+  el.previousTrainTime=$("previousTrainTime");
+  el.previousTrainLeft=$("previousTrainLeft");
 
   populateStations();
 
